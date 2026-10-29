@@ -2,11 +2,6 @@ name: Render HyperFrames Video
 
 on:
   workflow_dispatch:
-    inputs:
-      video_url:
-        description: 'Direct download URL for stitched_video.mp4'
-        required: false
-        default: ''
 
 permissions:
   contents: write
@@ -18,19 +13,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Download Stitched Video Asset
+      - name: Download Stitched Video Source
         run: |
           mkdir -p media
-          if [ -n "${{ github.event.inputs.video_url }}" ]; then
-            curl -L -o media/stitched_video.mp4 "${{ github.event.inputs.video_url }}"
-          fi
+          curl -L -o media/stitched_video.mp4 "https://github.com/KNIGHTABDO/motivation-film-render/releases/download/source-v1/stitched_raw.mp4"
+          ls -lh media/stitched_video.mp4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      - name: Install FFmpeg & Chrome Dependencies
+      - name: Install FFmpeg & Headless Chrome Dependencies
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 libasound2 fonts-noto-core fonts-dejavu-core
@@ -41,24 +35,24 @@ jobs:
       - name: Quality Check
         run: hyperframes check .
 
-      - name: Render Video 1080p
+      - name: Render Full 1080p Video
         run: |
           mkdir -p output
-          hyperframes render -o output/Crucible_of_Dawn_1080p.mp4
+          hyperframes render -o output/The_Crucible_of_Dawn_1080p.mp4
           ls -lh output/
 
       - name: Upload Master Video Artifact
         uses: actions/upload-artifact@v4
         with:
           name: motivation-master-1080p
-          path: output/
+          path: output/The_Crucible_of_Dawn_1080p.mp4
 
-      - name: Create Release
+      - name: Publish Final Release
         continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          TAG="v$(date +%Y%m%d-%H%M%S)"
-          gh release create "$TAG" output/Crucible_of_Dawn_1080p.mp4 \
-            --title "La Boîte à Bac - The Crucible of Dawn 1080p ($TAG)" \
-            --notes "Cinematic motivational film rendered in the cloud."
+          TAG="final-1080p"
+          gh release create "$TAG" output/The_Crucible_of_Dawn_1080p.mp4 \
+            --title "The Crucible of Dawn - Master 1080p" \
+            --notes "Broadcast-quality motivational film with full kinetic typography, pure Cairo Arabic subtitles, and master audio."
