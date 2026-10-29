@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Install Dependencies
         run: |
@@ -30,7 +30,7 @@ jobs:
           sudo apt-get install -y -qq ffmpeg libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libxkbcommon0 libxcomposite1 libxdamage1 libxrandr2 libgbm1 fonts-noto-core fonts-dejavu-core libasound2t64 || sudo apt-get install -y -qq ffmpeg libnss3 libgbm1
 
       - name: Install HyperFrames CLI
-        run: npm install -g @heygen/hyperframes-cli
+        run: npm install -g hyperframes
 
       - name: Quality Check
         run: hyperframes check .
