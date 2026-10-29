@@ -1,0 +1,6 @@
+node_modules/
+.hyperframes/artifacts/
+.thumbnails/
+*.log
+media/stitched_video.mp4
+output/

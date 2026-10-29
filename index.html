@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      @font-face {
+        font-family: 'Bebas Neue';
+        src: url('./fonts/BebasNeue-Regular.ttf') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+      @font-face {
+        font-family: 'Cairo';
+        src: url('./fonts/Cairo-Black.ttf') format('truetype');
+        font-weight: 900;
+        font-style: normal;
+      }
+
+      :root {
+        --ground: #000000;
+        --color-white: #FFFFFF;
+        --color-yellow: #FFE600;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html, body {
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: var(--ground);
+      }
+
+      #root {
+        position: relative;
+        width: 1920px;
+        height: 1080px;
+        background: #000000;
+        overflow: hidden;
+      }
+
+      /* Background Video Stream */
+      #bg-video {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 1920px;
+        height: 1080px;
+        object-fit: cover;
+      }
+
+      /* 2.39:1 CinemaScope Letterbox Bars */
+      .letterbox-bar {
+        position: absolute;
+        left: 0;
+        width: 1920px;
+        height: 138px;
+        background: #000000;
+        z-index: 20;
+      }
+      .letterbox-top { top: 0; }
+      .letterbox-bottom { bottom: 0; }
+
+      /* Kinetic English Typography Base */
+      .en-caption {
+        position: absolute;
+        font-family: 'Bebas Neue', sans-serif;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        z-index: 15;
+        opacity: 0;
+        pointer-events: none;
+        white-space: nowrap;
+        text-shadow: 0 4px 30px rgba(0, 0, 0, 0.95), 0 2px 8px rgba(0, 0, 0, 1);
+      }
+
+      /* Spatial Placements Across Frame */
+      .pos-center-hero {
+        top: 48%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 105px;
+        text-align: center;
+      }
+      .pos-center-large {
+        top: 48%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 88px;
+        text-align: center;
+      }
+      .pos-upper-center {
+        top: 215px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 72px;
+        text-align: center;
+      }
+      .pos-upper-left {
+        top: 240px;
+        left: 170px;
+        font-size: 68px;
+        text-align: left;
+      }
+      .pos-upper-right {
+        top: 240px;
+        right: 170px;
+        font-size: 72px;
+        text-align: right;
+      }
+      .pos-mid-left {
+        top: 430px;
+        left: 180px;
+        font-size: 72px;
+        text-align: left;
+      }
+      .pos-mid-right {
+        top: 430px;
+        right: 180px;
+        font-size: 72px;
+        text-align: right;
+      }
+      .pos-lower-mid {
+        top: 610px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 74px;
+        text-align: center;
+      }
+
+      /* Color Themes */
+      .txt-white { color: var(--color-white); }
+      .txt-yellow { color: var(--color-yellow); }
+      .txt-yellow-glow {
+        color: var(--color-yellow);
+        filter: drop-shadow(0 0 24px rgba(255, 230, 0, 0.5));
+      }
+
+      /* Pure Static Arabic Subtitle (No background box, Cairo Black 900) */
+      .ar-sub {
+        position: absolute;
+        bottom: 46px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-family: 'Cairo', sans-serif;
+        font-weight: 900;
+        font-size: 36px;
+        color: #FFFFFF;
+        text-align: center;
+        direction: rtl;
+        white-space: nowrap;
+        letter-spacing: 0.03em;
+        z-index: 30;
+        opacity: 0;
+        pointer-events: none;
+        background: transparent;
+        border: none;
+        padding: 0;
+        text-shadow: 0 4px 18px rgba(0, 0, 0, 0.95), 0 2px 4px rgba(0, 0, 0, 1), 0 0 12px rgba(0, 0, 0, 0.9);
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="root"
+      data-composition-id="main"
+      data-start="0"
+      data-duration="175.6"
+      data-width="1920"
+      data-height="1080"
+    >
+      <video id="bg-video" src="./media/stitched_video.mp4" data-start="0" data-duration="175.6" muted playsinline></video>
+      <audio id="main-audio" src="./media/master_audio.mp3" data-start="0" data-duration="175.6"></audio>
+
+      <!-- 2.39:1 CinemaScope Bars -->
+      <div class="letterbox-bar letterbox-top"></div>
+      <div class="letterbox-bar letterbox-bottom"></div>
+
+      <!-- Spatially Distributed English Captions (Every single spoken line) -->
+      <div id="en-captions-container">
+        <!-- Cold Hook (0:00 - 0:09) -->
+        <div id="en-01" class="en-caption pos-center-hero txt-white">02:00 AM.</div>
+        <div id="en-02" class="en-caption pos-center-hero txt-yellow-glow">STILL SCROLLING?</div>
+
+        <!-- Act I: The Wake-Up (0:09.0 - 0:33.3) -->
+        <div id="en-03" class="en-caption pos-upper-center txt-white">LOOK AT THE CLOCK!</div>
+        <div id="en-04" class="en-caption pos-upper-left txt-white">EVERYBODY WANTS THE RESULT!</div>
+        <div id="en-05" class="en-caption pos-center-large txt-yellow">THE MENTION, THE PRIDE IN THEIR EYES...</div>
+        <div id="en-06" class="en-caption pos-upper-right txt-white">THE DOORS SWINGING OPEN!</div>
+        <div id="en-07" class="en-caption pos-center-large txt-white">BUT NOBODY WANTS THE GRIND OF 2 A.M.!</div>
+        <div id="en-08" class="en-caption pos-lower-mid txt-white">STARING AT THAT BLANK PAGE...</div>
+        <div id="en-09" class="en-caption pos-center-large txt-yellow">WHEN YOUR MIND IS SCREAMING TO QUIT!</div>
+        <div id="en-10" class="en-caption pos-mid-left txt-white">YOU THINK YOU'RE TIRED?!</div>
+        <div id="en-11" class="en-caption pos-center-hero txt-yellow-glow">YOU'RE JUST COMFORTABLE!</div>
+
+        <!-- Act II: The Crucible (0:36.5 - 1:09.1) -->
+        <div id="en-12" class="en-caption pos-upper-center txt-white">FAILURE ISN'T A GRADE ON PAPER!</div>
+        <div id="en-13" class="en-caption pos-center-large txt-yellow">REAL FAILURE IS NEGOTIATING...</div>
+        <div id="en-14" class="en-caption pos-center-hero txt-yellow-glow">WITH YOUR OWN POTENTIAL!</div>
+        <div id="en-15" class="en-caption pos-upper-left txt-white">EVERY TIME YOU REACH FOR THAT PHONE...</div>
+        <div id="en-16" class="en-caption pos-mid-right txt-white">TRADING TONIGHT'S FOCUS FOR TOMORROW'S PANIC...</div>
+        <div id="en-17" class="en-caption pos-lower-mid txt-white">YOU ARE NOT RESTING!</div>
+        <div id="en-18" class="en-caption pos-center-large txt-yellow-glow">YOU ARE FINANCING YOUR OWN REGRET!</div>
+        <div id="en-19" class="en-caption pos-upper-center txt-white">STOP WAITING TO FEEL READY!</div>
+        <div id="en-20" class="en-caption pos-center-large txt-white">NOBODY FEELS READY IN THE DARK!</div>
+        <div id="en-21" class="en-caption pos-mid-left txt-white">DISCIPLINE IS NOT A TALENT!</div>
+        <div id="en-22" class="en-caption pos-center-hero txt-yellow">IT IS A WAR YOU WAGE ALONE...</div>
+        <div id="en-23" class="en-caption pos-lower-mid txt-yellow-glow">WHEN NOBODY IS IN THE ROOM TO APPLAUD!</div>
+
+        <!-- Act III: The Reckoning (1:18.0 - 2:09.5) -->
+        <div id="en-24" class="en-caption pos-center-large txt-white">LISTEN TO ME CLOSELY!</div>
+        <div id="en-25" class="en-caption pos-upper-center txt-white">THE DAY OF THE EXAM IS NOT WHERE YOU WIN!</div>
+        <div id="en-26" class="en-caption pos-center-large txt-yellow">YOU ALREADY WON—OR YOU ALREADY LOST...</div>
+        <div id="en-27" class="en-caption pos-mid-left txt-white">THREE MONTHS AGO!</div>
+        <div id="en-28" class="en-caption pos-center-large txt-white">IN THIS EXACT CHAIR, IN THIS EXACT DARK!</div>
+        <div id="en-29" class="en-caption pos-upper-center txt-white">WHEN THE ROOM GOES DEAD SILENT...</div>
+        <div id="en-30" class="en-caption pos-lower-mid txt-white">YOU DO NOT RISE TO THE LEVEL OF YOUR HOPES!</div>
+        <div id="en-31" class="en-caption pos-center-large txt-yellow-glow">YOU FALL TO THE LEVEL OF PREPARATION!</div>
+        <div id="en-32" class="en-caption pos-mid-left txt-white">YOU AREN'T BEGGING FOR LUCK!</div>
+        <div id="en-33" class="en-caption pos-center-hero txt-yellow">YOU ARE COLLECTING A DEBT...</div>
+        <div id="en-34" class="en-caption pos-center-large txt-yellow-glow">YOU ALREADY PAID!</div>
+        <div id="en-35" class="en-caption pos-upper-center txt-white">BEFORE YOU CLOSE THAT BOOK TONIGHT...</div>
+        <div id="en-36" class="en-caption pos-center-large txt-white">DOES ONE MORE HOUR AT THIS DESK HURT MORE...</div>
+        <div id="en-37" class="en-caption pos-center-hero txt-yellow-glow" style="font-size: 110px;">THAN THE PERMANENT POISON OF 'WHAT IF'?!</div>
+
+        <!-- Act IV: Climax & Resolution (2:32.5 - 2:54.5) -->
+        <div id="en-38" class="en-caption pos-mid-left txt-yellow">LOCK THE PHONE AWAY!</div>
+        <div id="en-39" class="en-caption pos-mid-right txt-white">PICK UP THE PEN!</div>
+        <div id="en-40" class="en-caption pos-upper-center txt-white">KILL THE DOUBT!</div>
+        <div id="en-41" class="en-caption pos-center-large txt-white">DON'T STOP WHEN YOU'RE TIRED...</div>
+        <div id="en-42" class="en-caption pos-center-hero txt-yellow-glow" style="font-size: 115px;">STOP WHEN IT'S YOURS!</div>
+        <div id="en-43" class="en-caption pos-center-hero txt-white" style="font-size: 70px;">LA BOÎTE À BAC</div>
+      </div>
+
+      <!-- Static Arabic Subtitles (Fixed Bottom, Clean Cairo Font, Full Translations) -->
+      <div id="ar-subtitles-container">
+        <!-- Cold Hook -->
+        <div id="ar-01" class="ar-sub">02:00 صباحاً.</div>
+        <div id="ar-02" class="ar-sub">ما زلت تتصفح هاتفك؟</div>
+
+        <!-- Act I -->
+        <div id="ar-03" class="ar-sub">انظر إلى الساعة!</div>
+        <div id="ar-04" class="ar-sub">الجميع يريد النتيجة والنجاح!</div>
+        <div id="ar-05" class="ar-sub">الجميع يريد الفخر في أعين والديهم...</div>
+        <div id="ar-06" class="ar-sub">...والأبواب التي تُفتح أمامهم!</div>
+        <div id="ar-07" class="ar-sub">لكن لا أحد يريد مشقة وسهر الثانية صباحاً!</div>
+        <div id="ar-08" class="ar-sub">لا أحد يريد التحديق في تلك الصفحة البيضاء...</div>
+        <div id="ar-09" class="ar-sub">...وعقلك يصرخ فيك لتستسلم وتتوقف!</div>
+        <div id="ar-10" class="ar-sub">أتظن أنك متعب حقاً؟!</div>
+        <div id="ar-11" class="ar-sub">كلا! أنت لست متعباً—أنت فقط مستسلم لمنطقة راحتك!</div>
+
+        <!-- Act II -->
+        <div id="ar-12" class="ar-sub">الفشل ليس مجرد علامة على ورقة امتحان!</div>
+        <div id="ar-13" class="ar-sub">الفشل الحقيقي هو أن تساوم وتتنازل...</div>
+        <div id="ar-14" class="ar-sub">...عن كامل قدراتك وإمكانياتك الحقيقية!</div>
+        <div id="ar-15" class="ar-sub">في كل مرة تمتد يدك نحو ذلك الهاتف...</div>
+        <div id="ar-16" class="ar-sub">...وتستبدل تركيز الليلة بهلع وقلق الغد...</div>
+        <div id="ar-17" class="ar-sub">أنت لا ترتاح في الحقيقة!</div>
+        <div id="ar-18" class="ar-sub">أنت تموّل ندمك وحسرتك المستقبلية بيدك!</div>
+        <div id="ar-19" class="ar-sub">توقف عن انتظار الشعور بالجاهزية!</div>
+        <div id="ar-20" class="ar-sub">لا أحد يشعر بالجاهزية في قلب العتمة!</div>
+        <div id="ar-21" class="ar-sub">الانضباط ليس موهبة فطرية!</div>
+        <div id="ar-22" class="ar-sub">إنه حرب ضارية تخوضها مع نفسك بمفردك...</div>
+        <div id="ar-23" class="ar-sub">...حين لا يراك أحد ولا يصفق لك أحد في الغرفة!</div>
+
+        <!-- Act III -->
+        <div id="ar-24" class="ar-sub">استمع إليّ جيداً وبكل تركيز!</div>
+        <div id="ar-25" class="ar-sub">يوم الامتحان الفعلي ليس هو المكان الذي تنتصر فيه!</div>
+        <div id="ar-26" class="ar-sub">أنت انتصرت بالفعل—أو خسرت بالفعل...</div>
+        <div id="ar-27" class="ar-sub">...منذ ثلاثة أشهر مضت!</div>
+        <div id="ar-28" class="ar-sub">في هذا الكرسي بالذات، وفي عتمة هذه الغرفة بالذات!</div>
+        <div id="ar-29" class="ar-sub">حين تُوزع أوراق الامتحان ويخيم الصمت المطبق...</div>
+        <div id="ar-30" class="ar-sub">أنت لا ترتقي أبداً لمستوى آمالك وأمنياتك!</div>
+        <div id="ar-31" class="ar-sub">بل تهبط دائماً إلى مستوى استعدادك وتحضيرك!</div>
+        <div id="ar-32" class="ar-sub">أنت لا تتوسل الحظ عند دخولك تلك القاعة!</div>
+        <div id="ar-33" class="ar-sub">أنت تدخل لتسترد ديناً مستحقاً...</div>
+        <div id="ar-34" class="ar-sub">...دفعته بالكامل مسبقاً من عرقك وسهرك!</div>
+        <div id="ar-35" class="ar-sub">وقبل أن تغلق هذا الكتاب الليلة، اسأل نفسك سؤالاً واحداً:</div>
+        <div id="ar-36" class="ar-sub">هل يؤلم تعب ساعة إضافية على هذا المكتب...</div>
+        <div id="ar-37" class="ar-sub">...أكثر من السم القاتل لحسرة "ماذا لو"؟!</div>
+
+        <!-- Act IV -->
+        <div id="ar-38" class="ar-sub">اقفل الهاتف وضعه بعيداً!</div>
+        <div id="ar-39" class="ar-sub">ارفع قلمك الآن!</div>
+        <div id="ar-40" class="ar-sub">احسم أمرك واقضِ على الشك!</div>
+        <div id="ar-41" class="ar-sub">لا تتوقف حينما تشعر بالتعب...</div>
+        <div id="ar-42" class="ar-sub">توقف فقط حين يصبح النجاح ملكاً خالصاً لك!</div>
+        <div id="ar-43" class="ar-sub">قناة لا بوات أ باك</div>
+      </div>
+    </div>
+
+    <script>
+      const tl = gsap.timeline({ paused: true });
+
+      function syncSub(enId, arId, start, end, animType = "pop") {
+        if (animType === "hero") {
+          tl.fromTo(enId, { opacity: 0, scale: 0.88 }, { opacity: 1, scale: 1.0, duration: 0.18, ease: "back.out(1.4)", immediateRender: false }, start);
+          tl.to(enId, { opacity: 0, scale: 1.06, duration: 0.14, ease: "power2.in" }, end - 0.14);
+        } else if (animType === "slide-left") {
+          tl.fromTo(enId, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.16, ease: "power2.out", immediateRender: false }, start);
+          tl.to(enId, { opacity: 0, x: 20, duration: 0.12, ease: "power2.in" }, end - 0.12);
+        } else if (animType === "slide-right") {
+          tl.fromTo(enId, { opacity: 0, x: 30 }, { opacity: 1, x: 0, duration: 0.16, ease: "power2.out", immediateRender: false }, start);
+          tl.to(enId, { opacity: 0, x: -20, duration: 0.12, ease: "power2.in" }, end - 0.12);
+        } else {
+          tl.fromTo(enId, { opacity: 0, scale: 0.94 }, { opacity: 1, scale: 1.0, duration: 0.15, ease: "power2.out", immediateRender: false }, start);
+          tl.to(enId, { opacity: 0, scale: 1.04, duration: 0.12, ease: "power2.in" }, end - 0.12);
+        }
+
+        tl.fromTo(arId, { opacity: 0 }, { opacity: 1, duration: 0.14, ease: "none", immediateRender: false }, start);
+        tl.to(arId, { opacity: 0, duration: 0.12, ease: "none" }, end - 0.12);
+      }
+
+      // Cold Hook
+      syncSub("#en-01", "#ar-01", 2.50, 4.00, "hero");
+      syncSub("#en-02", "#ar-02", 4.00, 8.85, "hero");
+
+      // Act I: The Wake-Up
+      syncSub("#en-03", "#ar-03", 9.00, 11.20, "pop");
+      syncSub("#en-04", "#ar-04", 11.20, 13.50, "slide-left");
+      syncSub("#en-05", "#ar-05", 13.50, 16.20, "pop");
+      syncSub("#en-06", "#ar-06", 16.20, 18.50, "slide-right");
+      syncSub("#en-07", "#ar-07", 18.50, 22.00, "pop");
+      syncSub("#en-08", "#ar-08", 22.00, 24.50, "slide-left");
+      syncSub("#en-09", "#ar-09", 24.50, 27.50, "pop");
+      syncSub("#en-10", "#ar-10", 27.50, 30.50, "slide-left");
+      syncSub("#en-11", "#ar-11", 30.50, 33.30, "hero");
+
+      // Act II: The Crucible
+      syncSub("#en-12", "#ar-12", 36.50, 39.00, "pop");
+      syncSub("#en-13", "#ar-13", 39.00, 42.00, "slide-left");
+      syncSub("#en-14", "#ar-14", 42.00, 45.50, "hero");
+      syncSub("#en-15", "#ar-15", 45.50, 48.50, "slide-left");
+      syncSub("#en-16", "#ar-16", 48.50, 51.50, "slide-right");
+      syncSub("#en-17", "#ar-17", 51.50, 53.50, "pop");
+      syncSub("#en-18", "#ar-18", 53.50, 56.50, "hero");
+      syncSub("#en-19", "#ar-19", 56.50, 58.80, "pop");
+      syncSub("#en-20", "#ar-20", 58.80, 61.20, "slide-left");
+      syncSub("#en-21", "#ar-21", 61.20, 63.80, "pop");
+      syncSub("#en-22", "#ar-22", 63.80, 66.50, "slide-left");
+      syncSub("#en-23", "#ar-23", 66.50, 69.10, "hero");
+
+      // Act III: The Reckoning
+      syncSub("#en-24", "#ar-24", 78.00, 80.50, "hero");
+      syncSub("#en-25", "#ar-25", 80.50, 84.00, "pop");
+      syncSub("#en-26", "#ar-26", 84.00, 87.00, "slide-left");
+      syncSub("#en-27", "#ar-27", 87.00, 89.50, "hero");
+      syncSub("#en-28", "#ar-28", 89.50, 93.00, "pop");
+      syncSub("#en-29", "#ar-29", 93.00, 95.80, "slide-left");
+      syncSub("#en-30", "#ar-30", 95.80, 99.00, "pop");
+      syncSub("#en-31", "#ar-31", 99.00, 102.50, "hero");
+      syncSub("#en-32", "#ar-32", 102.50, 104.80, "slide-left");
+      syncSub("#en-33", "#ar-33", 104.80, 107.20, "pop");
+      syncSub("#en-34", "#ar-34", 107.20, 109.50, "hero");
+      syncSub("#en-35", "#ar-35", 118.50, 122.00, "pop");
+      syncSub("#en-36", "#ar-36", 122.00, 125.80, "slide-left");
+      syncSub("#en-37", "#ar-37", 125.80, 129.50, "hero");
+
+      // Act IV: Climax & Resolution
+      syncSub("#en-38", "#ar-38", 152.50, 154.20, "slide-left");
+      syncSub("#en-39", "#ar-39", 154.20, 156.50, "slide-right");
+      syncSub("#en-40", "#ar-40", 156.50, 158.80, "pop");
+      syncSub("#en-41", "#ar-41", 158.80, 160.20, "slide-left");
+      syncSub("#en-42", "#ar-42", 160.20, 161.40, "hero");
+      syncSub("#en-43", "#ar-43", 171.00, 174.50, "hero");
+
+      window.__timelines = window.__timelines || {};
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>
